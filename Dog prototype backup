@@ -1,0 +1,196 @@
+<img class="doggo" src="https://www.akc.org/wp-content/themes/akc/component-library/assets/img/welcome.jpg">
+
+<div class="UI">
+  <div id="money"></div>
+  <section class="properties">
+    <div class="attributes">
+      <div class="attribute_item">Fun:<span id="fun"></span></div>
+      <div class="attribute_item">Food:<span id="food"></span></div>
+      <div class="attribute_item">Water:<span id="thirst"></span></div>
+    </div>
+
+    <div class="inventory">
+      <div id="tennis_icon" class="inventory_item">tennis ball <br> £20 </div>
+      <div id="food_icon" class="inventory_item">food<br> £10 </div>
+      <div id="water_icon" class="inventory_item">water<br> £5 </div>
+    </div>
+    <section>
+
+      <section class="options">
+
+</div>
+
+
+
+
+body{
+  font-family:arial;
+}
+
+.doggo{
+  cursor:pointer;
+  position:absolute;
+  left:40%;
+}
+#money{
+  display:flex;
+  justify-content:flex-end;
+  margin: 1em 3em 0em 0em;
+}
+
+.properties{
+  display:flex;
+  allign-items:center;
+  padding:1em;
+}
+.attributes{
+  
+}
+.attribute_item{
+  background-color:lightblue;
+  border-radius:10px;
+  padding:1em;
+  margin-bottom:1em;
+}
+.inventory{
+  background-color:lightblue;
+  margin-left:auto;
+  border-radius:10px;
+  padding:1em;
+}
+.inventory_item{
+  pointer-events:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  background-color:red;
+  width:5em;
+  height:5em;
+  margin-top: 1em;
+}
+.inventory_item:nth-child(1){
+  margin-top:0em;
+}
+.inventory_item_purchasable{
+  pointer-events:auto;
+  background-color:green;
+  cursor:pointer;
+}
+
+
+
+
+let m = 0;
+let funScore = 26;
+let foodScore= 26;
+let thirstScore = 26;
+
+let arr = [funScore, foodScore, thirstScore];
+
+const funMax = 100;
+const foodMax = 100;
+const thirstMax = 100;
+
+const funDraw = document.querySelector("#fun");
+const foodDraw = document.querySelector("#food");
+const thirstDraw = document.querySelector("#thirst");
+
+const w = document.querySelector("#money");
+w.innerHTML = "Wallet: £" + m;
+
+const tennisIcon = document.querySelector("#tennis_icon");
+const foodIcon = document.querySelector("#food_icon");
+const waterIcon = document.querySelector("#water_icon");
+
+let tennisBall = 
+    {cost : 20,
+     icon : tennisIcon,
+     index : arr[0]};
+
+let food = 
+    {cost : 10,
+     icon : foodIcon,
+     index : arr[1]};
+
+let water = 
+    {cost : 5,
+     icon : waterIcon,
+     index : arr[2]};
+
+let items = [tennisBall, food, water];
+
+function purchasable(){
+  for(i in items){
+    let c = items[i];
+    if(c.cost <= m){
+    c.icon.classList.add("inventory_item_purchasable");
+    }
+    else{
+      c.icon.classList.remove("inventory_item_purchasable");
+      c = items[i+1];
+    }
+  }  
+}
+
+const doggo = document.querySelector(".doggo");
+
+doggo.addEventListener("click", function praise(){
+  m = m + 1;
+  w.innerHTML = "Wallet: £" + m;
+  purchasable();
+})
+
+
+function collate() {
+  //m = m + 1;
+  w.innerHTML = "Wallet: £" + m;
+  setTimeout(collate, 5000);
+  purchasable();
+}
+
+collate();
+
+function purchase(item){
+  m = m - item.cost;
+  item.index = item.index + 10;
+  purchasable();
+  draw();
+  collate();
+  return m, item.index;
+  
+}
+
+tennisBall.icon.addEventListener("click",     function(){purchase(tennisBall)});
+food.icon.addEventListener("click",     function(){purchase(food)});
+water.icon.addEventListener("click",     function(){purchase(water)});
+
+function draw(){
+funDraw.innerHTML = " " + tennisBall.index + "/" + funMax;
+foodDraw.innerHTML = " " + food.index + "/" + foodMax;
+thirstDraw.innerHTML = " " + water.index + "/" + thirstMax;
+}
+
+function decay(){
+  //for(i in items){
+    //let c = items[i];
+    //c.index = c.index - 1;
+    //items[i].index = c.index;
+    //draw();
+    //if(items[i].index <= 0){
+    //  alert("game over!");
+    //}else{
+    tennisBall.index = tennisBall.index -1;
+    food.index = food.index -1;
+    water.index = water.index -1;
+    draw();
+        if(tennisBall.index <= 0 || food.index <= 0 || water.index <= 0 ){
+      alert("game over!")
+      return;
+    }
+    setTimeout(decay, 5000);
+    //}
+//
+}
+draw();
+decay();
